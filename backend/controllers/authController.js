@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password)
@@ -57,4 +57,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { registerUser, loginUser };
