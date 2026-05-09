@@ -4,9 +4,10 @@ const Story = require("../models/Story");
 
 const normalizeDate = (rawDate) => {
   if (!rawDate) return "";
-  // HN title attribute gives "2025-05-09T10:23:45" with no timezone
-  // Append Z so it's stored as valid UTC ISO string
-  return rawDate.includes("Z") ? rawDate : rawDate + "Z";
+  // HN .age title attribute format: "2025-05-08T14:23:11 1746714191"
+  // (ISO part + space + unix epoch) — split and take only the ISO part
+  const isoPart = rawDate.split(" ")[0];
+  return isoPart.includes("Z") ? isoPart : isoPart + "Z";
 };
 
 const scrape = async () => {
@@ -32,6 +33,8 @@ const scrape = async () => {
     const rawPostedAt = subtext.find(".age").attr("title") || "";
     const postedAt = normalizeDate(rawPostedAt);
 
+    console.log(`"${title}" | raw: "${rawPostedAt}" | saved: "${postedAt}"`);
+
     if (title) stories.push({ title, url, points, author, postedAt });
   });
 
@@ -39,7 +42,7 @@ const scrape = async () => {
     stories.map((story) =>
       Story.findOneAndUpdate(
         { title: story.title, author: story.author },
-        story,
+        { $set: story }, // $set forces postedAt to update on existing docs
         { upsert: true, new: true, setDefaultsOnInsert: true },
       ),
     ),

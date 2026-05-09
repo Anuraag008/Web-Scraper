@@ -3,6 +3,43 @@ import { useAuth } from "../hooks/useAuth";
 import axiosInstance from "../api/axiosInstance";
 import "./StoryCard.css";
 
+const formatTime = (postedAt) => {
+  if (!postedAt) return "some time ago";
+  try {
+    // HN format: "2025-05-08T14:23:11 1746714191" or "2025-05-08T14:23:11Z"
+    // Take only the ISO part before any space, ensure UTC with Z
+    const isoPart = postedAt.split(" ")[0];
+    const normalized = isoPart.includes("Z") ? isoPart : isoPart + "Z";
+    const date = new Date(normalized);
+
+    if (isNaN(date.getTime())) return "some time ago";
+
+    const diffMs = Date.now() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return "just now";
+    if (diffMins < 60)
+      return `${diffMins} minute${diffMins === 1 ? "" : "s"} ago`;
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24)
+      return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+  } catch {
+    return "some time ago";
+  }
+};
+
+const getDomain = (url) => {
+  try {
+    return new URL(url).hostname.replace("www.", "");
+  } catch {
+    return "";
+  }
+};
+
 const StoryCard = ({ story, initialBookmarked = false, onBookmarkChange }) => {
   const { isAuthenticated } = useAuth();
   const [bookmarked, setBookmarked] = useState(initialBookmarked);
@@ -27,28 +64,6 @@ const StoryCard = ({ story, initialBookmarked = false, onBookmarkChange }) => {
     }
   };
 
-  const formatTime = (postedAt) => {
-    if (!postedAt) return "some time ago";
-    try {
-      const diff = Math.floor(
-        (Date.now() - new Date(postedAt).getTime()) / 60000,
-      );
-      if (diff < 60) return `${diff} minutes ago`;
-      if (diff < 1440) return `${Math.floor(diff / 60)} hours ago`;
-      return `${Math.floor(diff / 1440)} days ago`;
-    } catch {
-      return postedAt;
-    }
-  };
-
-  const domain = (url) => {
-    try {
-      return new URL(url).hostname.replace("www.", "");
-    } catch {
-      return "";
-    }
-  };
-
   return (
     <div className="story-card">
       <div className="story-points">
@@ -65,7 +80,7 @@ const StoryCard = ({ story, initialBookmarked = false, onBookmarkChange }) => {
           {story.title}
         </a>
         {story.url && (
-          <span className="story-domain">({domain(story.url)})</span>
+          <span className="story-domain">({getDomain(story.url)})</span>
         )}
         <div className="story-meta">
           <span>
