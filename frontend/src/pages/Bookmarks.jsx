@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../api/axiosInstance";
 import StoryCard from "../components/StoryCard";
-//import "./Home.css";
-//import "./Bookmarks.css";
+import "./Home.css";
+import "./Bookmarks.css";
 
 const Bookmarks = () => {
   const [bookmarks, setBookmarks] = useState([]);
@@ -13,7 +13,14 @@ const Bookmarks = () => {
     axiosInstance
       .get("/api/stories/bookmarks")
       .then(({ data }) => setBookmarks(data))
-      .catch(() => setError("Failed to load bookmarks."))
+      .catch((err) => {
+        console.error(
+          "Bookmarks error:",
+          err.response?.status,
+          err.response?.data,
+        );
+        setError(err.response?.data?.message || "Failed to load bookmarks.");
+      })
       .finally(() => setLoading(false));
   }, []);
 

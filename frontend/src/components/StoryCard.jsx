@@ -6,8 +6,6 @@ import "./StoryCard.css";
 const formatTime = (postedAt) => {
   if (!postedAt) return "some time ago";
   try {
-    // HN format: "2025-05-08T14:23:11 1746714191" or "2025-05-08T14:23:11Z"
-    // Take only the ISO part before any space, ensure UTC with Z
     const isoPart = postedAt.split(" ")[0];
     const normalized = isoPart.includes("Z") ? isoPart : isoPart + "Z";
     const date = new Date(normalized);
