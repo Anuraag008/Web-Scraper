@@ -4,8 +4,7 @@ const Story = require("../models/Story");
 
 const normalizeDate = (rawDate) => {
   if (!rawDate) return "";
-  // HN .age title attribute format: "2025-05-08T14:23:11 1746714191"
-  // (ISO part + space + unix epoch) — split and take only the ISO part
+
   const isoPart = rawDate.split(" ")[0];
   return isoPart.includes("Z") ? isoPart : isoPart + "Z";
 };
