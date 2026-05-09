@@ -1,0 +1,27 @@
+.story-card {
+  display: flex; align-items: flex-start; gap: 1rem;
+  padding: 1rem 1.2rem; background: #fff; border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.story-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
+.story-points {
+  min-width: 48px; display: flex; flex-direction: column; align-items: center;
+  background: #fff7f0; border: 1px solid #ffe0c4; border-radius: 8px; padding: 8px 6px;
+}
+.points-num { font-size: 1.1rem; font-weight: 700; color: #ff6600; line-height: 1; }
+.points-label { font-size: 0.65rem; color: #999; text-transform: uppercase; }
+.story-content { flex: 1; min-width: 0; }
+.story-title { font-size: 0.98rem; font-weight: 600; color: #1a1a1a; text-decoration: none; line-height: 1.4; }
+.story-title:hover { color: #ff6600; text-decoration: underline; }
+.story-domain { font-size: 0.8rem; color: #888; margin-left: 6px; }
+.story-meta { margin-top: 6px; font-size: 0.8rem; color: #777; display: flex; gap: 4px; flex-wrap: wrap; }
+.meta-sep { color: #ccc; }
+.bookmark-btn {
+  background: none; border: 1px solid #ddd; border-radius: 6px;
+  width: 36px; height: 36px; font-size: 1.1rem; cursor: pointer; color: #ccc;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.bookmark-btn:hover { border-color: #ff6600; color: #ff6600; }
+.bookmark-btn.bookmarked { border-color: #ff6600; color: #ff6600; background: #fff7f0; }
+.bookmark-btn:disabled { opacity: 0.5; cursor: not-allowed; }

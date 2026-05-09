@@ -2,6 +2,13 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const Story = require("../models/Story");
 
+const normalizeDate = (rawDate) => {
+  if (!rawDate) return "";
+  // HN title attribute gives "2025-05-09T10:23:45" with no timezone
+  // Append Z so it's stored as valid UTC ISO string
+  return rawDate.includes("Z") ? rawDate : rawDate + "Z";
+};
+
 const scrape = async () => {
   const { data } = await axios.get("https://news.ycombinator.com", {
     headers: { "User-Agent": "Mozilla/5.0 (compatible; HN-Scraper/1.0)" },
@@ -22,7 +29,8 @@ const scrape = async () => {
     const url = titleEl.attr("href") || "";
     const points = parseInt(subtext.find(`#score_${id}`).text()) || 0;
     const author = subtext.find(".hnuser").text().trim() || "unknown";
-    const postedAt = subtext.find(".age").attr("title") || "";
+    const rawPostedAt = subtext.find(".age").attr("title") || "";
+    const postedAt = normalizeDate(rawPostedAt);
 
     if (title) stories.push({ title, url, points, author, postedAt });
   });

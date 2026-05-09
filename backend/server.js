@@ -9,7 +9,12 @@ const scrapeRoutes = require("./routes/scrape.js");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
@@ -25,11 +30,11 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("GLOBAL ERROR:", err.stack);
   res.status(500).json({ message: "Internal server error" });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT) || 5000;
 
 const start = async () => {
   await connectDB();

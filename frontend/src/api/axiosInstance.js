@@ -1,8 +1,7 @@
 import axios from "axios";
 
-const apiUrl = import.meta?.env?.VITE_APP_API_URL ?? (typeof process !== "undefined" ? process.env.REACT_APP_API_URL : undefined);
 const axiosInstance = axios.create({
-  baseURL: apiUrl || "http://localhost:5000",
+  baseURL: "",
 });
 
 axiosInstance.interceptors.request.use(
